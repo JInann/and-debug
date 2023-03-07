@@ -10,11 +10,12 @@ const CMD = (cmd)=>{
 
 
 // web服务
+const path = require('path')
 const handler = require('serve-handler');
 const http = require('http');
 const server = http.createServer((request, response) => {
   return handler(request, response,{
-    public:'./devtools'
+    public:path.join(__dirname,'./devtools')
   });
 });
 server.listen(3030, () => {
