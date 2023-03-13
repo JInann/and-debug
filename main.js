@@ -8,22 +8,6 @@ const CMD = (cmd)=>{
   return result
 }
 
-
-// web服务
-const path = require('path')
-const handler = require('serve-handler');
-const http = require('http');
-const server = http.createServer((request, response) => {
-  return handler(request, response,{
-    public:path.join(__dirname,'./devtools')
-  });
-});
-server.listen(3030, () => {
-  console.log('Running at http://localhost:3030');
-});
-
-
-
 const CDP = require('chrome-remote-interface');
 /**
  * 从命令行输出的字符串中获取需要的进程信息
@@ -79,14 +63,10 @@ async function main() {
           },[])
           targets.forEach(item=>{
             if(_targets.findIndex(v=>v.webSocketDebuggerUrl==item.webSocketDebuggerUrl)<0){
-              // 拼接调试地址
-              const debuggerUrl = `http://localhost:3030/page/serve_rev/index/?ws=`+item.webSocketDebuggerUrl.replace('ws://','')
               const debuggerUrl2 = item.devtoolsFrontendUrl.replace('chrome-devtools-frontend.appspot.com','devtools.1036892522.top')
               console.log(item.title)
               console.log(item.url)
-              console.log('本地')
-              console.log(debuggerUrl)
-              console.log('远端')
+              console.log('调试地址：')
               console.log(debuggerUrl2)
               console.log('\n')
               _targets.push(item)
