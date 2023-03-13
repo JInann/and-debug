@@ -72,9 +72,13 @@ async function main() {
             if(_targets.findIndex(v=>v.webSocketDebuggerUrl==item.webSocketDebuggerUrl)<0){
               // 拼接调试地址
               const debuggerUrl = `http://localhost:3030/page/serve_rev/index/?ws=`+item.webSocketDebuggerUrl.replace('ws://','')
+              const debuggerUrl2 = item.devtoolsFrontendUrl.replace('chrome-devtools-frontend.appspot.com','devtools.1036892522.top')
               console.log(item.title)
               console.log(item.url)
+              console.log('本地')
               console.log(debuggerUrl)
+              console.log('远端')
+              console.log(debuggerUrl2)
               console.log('\n')
               _targets.push(item)
             }
