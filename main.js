@@ -52,7 +52,16 @@ const _targets =[]
 async function main() {
     try {
         // 获取进程信息
-        let pidStr = CMD('adb shell grep -a webview_devtools_remote /proc/net/unix')
+        let pidStr
+        try {
+          pidStr = CMD('adb shell grep -a webview_devtools_remote /proc/net/unix')
+        } catch (error) {
+          if(/command not found/.test(error.message)){
+            console.error('请先安装adb命令行工具')
+          }else{
+            console.log('没有找到运行中的webview')
+          }
+        }
         // 可能是多个webview进程
         const pids = getPidsFromStr(pidStr)
         log&&console.log(pids)
