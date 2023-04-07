@@ -1,6 +1,6 @@
 {
   "name": "and-debug",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -9,15 +9,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chrome-remote-interface": "^0.32.1"
+    "chrome-remote-interface": "^0.32.1",
+    "open": "^9.1.0"
   },
   "bin": {
-    "and-debug": "./bin/index.js"
+    "ad": "./bin/serve.js"
   },
-  "keywords": ["webview","devtools","android","chrome","debug","chrome-remote-interface"],
+  "keywords": [
+    "webview",
+    "devtools",
+    "android",
+    "chrome",
+    "debug",
+    "chrome-remote-interface"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:JInann/and-debug.git"
   },
-  "homepage": "https://github.com/JInann/and-debug"
+  "homepage": "https://github.com/JInann/and-debug",
+  "devDependencies": {
+    "@types/node": "^18.15.11"
+  }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>webview调试</title>
+  <style>
+    #app{
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+  </div>
+  <script>
+    function getData(){
+      fetch('/list').then(res=>res.json()).then(res=>{
+        if(res.length>0){
+          document.querySelector('#app').innerHTML = [...res].map(v=>{
+            return `
+            <div class='item'>
+              <div>标题：${v.title}<div>
+              <div>h5地址：${v.url}</div>
+              <div><a href="${v.debuggerUrl}" target="_blank">开始调试</a><div>
+            </div>`
+          }).join('<hr />')
+        }else{
+          document.querySelector('#app').innerHTML = '暂无数据'
+        }
+      })
+    }
+    getData()
+    setInterval(()=>{
+      getData()
+    },1000)
+  </script>
+</body>
+</html>
