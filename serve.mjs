@@ -92,14 +92,14 @@ const main = async ()=>{
   await sendCommond('host:transport-any')
   let pidStr = await sendCommond('shell:grep -a webview_devtools_remote /proc/net/unix')
   let pids = getPidsFromStr(pidStr)
-  newTargets = []
+  let tempTarget = []
   for (const pidInfo of pids) {
     await connect()
     await sendCommond(`host:forward:tcp:${pidInfo.port};localabstract:${pidInfo.v}`).then(()=>GET(`http://127.0.0.1:${pidInfo.port}/json/list`).then(targets=>{
       targets.forEach(item=>{
         const debuggerUrl = item.devtoolsFrontendUrl.replace('chrome-devtools-frontend.appspot.com','devtools.1036892522.top')
         item.debuggerUrl = debuggerUrl
-        newTargets.push(item)
+        tempTarget.push(item)
         if(_targets.findIndex(v=>v.webSocketDebuggerUrl==item.webSocketDebuggerUrl)<0){
           console.log(item.title)
           console.log(item.url)
@@ -111,6 +111,7 @@ const main = async ()=>{
       })
     }))
   }
+  newTargets = tempTarget
   setTimeout(() => {
     main()
   }, 1000);
