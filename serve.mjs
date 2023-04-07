@@ -137,5 +137,5 @@ server.on('error',(err)=>{
   console.log(err.message)
   process.exit(0)
 })
-// open('http://127.0.0.1:9876')
+open('http://127.0.0.1:9876')
 
