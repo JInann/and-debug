@@ -85,31 +85,39 @@ const GET = url =>{
       })
   })
 }
+const getTargets = async (pidInfo)=>{
+  return GET(`http://127.0.0.1:${pidInfo.port}/json/list`).then(targets=>{
+    targets.forEach(item=>{
+      const debuggerUrl = item.devtoolsFrontendUrl.replace('chrome-devtools-frontend.appspot.com','devtools.1036892522.top')
+      item.debuggerUrl = debuggerUrl
+      tempTarget.push(item)
+      if(_targets.findIndex(v=>v.webSocketDebuggerUrl==item.webSocketDebuggerUrl)<0){
+        console.log(item.title)
+        console.log(item.url)
+        console.log('调试地址：')
+        console.log(debuggerUrl)
+        console.log('\n')
+        _targets.push(item)
+      }
+    })
+  })
+}
 let _targets = []
 let newTargets = []
+let tempTarget = []
 const main = async ()=>{
   await connect()
   await sendCommond('host:transport-any')
   let pidStr = await sendCommond('shell:grep -a webview_devtools_remote /proc/net/unix')
   let pids = getPidsFromStr(pidStr)
-  let tempTarget = []
+  tempTarget = []
   for (const pidInfo of pids) {
     await connect()
-    await sendCommond(`host:forward:tcp:${pidInfo.port};localabstract:${pidInfo.v}`).then(()=>GET(`http://127.0.0.1:${pidInfo.port}/json/list`).then(targets=>{
-      targets.forEach(item=>{
-        const debuggerUrl = item.devtoolsFrontendUrl.replace('chrome-devtools-frontend.appspot.com','devtools.1036892522.top')
-        item.debuggerUrl = debuggerUrl
-        tempTarget.push(item)
-        if(_targets.findIndex(v=>v.webSocketDebuggerUrl==item.webSocketDebuggerUrl)<0){
-          console.log(item.title)
-          console.log(item.url)
-          console.log('调试地址：')
-          console.log(debuggerUrl)
-          console.log('\n')
-          _targets.push(item)
-        }
-      })
-    }))
+    await sendCommond(`host:forward:tcp:${pidInfo.port};localabstract:${pidInfo.v}`).then(()=>getTargets(pidInfo))
+  }
+  try {
+    await getTargets({port:9000})
+  } catch (error) {
   }
   newTargets = tempTarget
   setTimeout(() => {
