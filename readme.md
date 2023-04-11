@@ -8,8 +8,6 @@ npm i and-debug -g
 
 ```bash
 $ ad
-# 搭配pm2食用更佳
-$ pm2 start ad
 ```
 
 > 执行命令后，即可在浏览器中进行调试。
