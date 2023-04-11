@@ -1,6 +1,6 @@
 {
   "name": "and-debug",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "open": "^9.1.0"
   },
   "bin": {
-    "ad": "./bin/serve.js"
+    "ad": "./serve.mjs"
   },
   "keywords": [
     "webview",
