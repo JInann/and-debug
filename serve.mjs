@@ -70,7 +70,8 @@ const connect = ()=>{
 }
 const GET = url =>{
   return new Promise((reslove,reject)=>{
-    get(new URL(url),res=>{
+    try {
+      get(new URL(url),res=>{
         res.setEncoding('utf8');
         let rawData = '';
         res.on('data', (chunk) => { rawData += chunk; });
@@ -82,7 +83,10 @@ const GET = url =>{
             reject(e)
           }
         });
-      })
+      }).on('error',reject)
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 const getTargets = async (pidInfo)=>{
