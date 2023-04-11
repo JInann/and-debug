@@ -4,6 +4,10 @@ import { get,createServer } from 'http'
 import { Socket } from 'net'
 import { URL } from 'url'
 import open  from 'open'
+import path from 'path'
+import {fileURLToPath} from 'url'
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+
 let soc = new Socket()
 let resultMsg
 soc.on('data',(data)=>{
@@ -134,7 +138,7 @@ main()
 const server = createServer((req,res)=>{
   let pathname = req.url
   if(pathname=='/index.html'||pathname=='/'){
-    res.write(readFileSync('./index.html'))
+    res.write(readFileSync(dirname + '/index.html'))
   }
   if(pathname=='/list'){
     if(newTargets.length==0){
