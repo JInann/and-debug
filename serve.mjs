@@ -41,6 +41,9 @@ const getPidsFromStr = str=>{
 const sendCommond = cmd=>{
   let str = (cmd.length).toString(16).padStart(4,'0').toUpperCase() +cmd
   // console.log(cmd)
+  soc.on('error',(err)=>{
+    console.log(err.message)
+  })
   soc.write(str)
   return new Promise((res,rej)=>{
     let count = 0
@@ -115,20 +118,20 @@ let _targets = []
 let newTargets = []
 let tempTarget = []
 const main = async ()=>{
-  await connect()
-  await sendCommond('host:transport-any')
-  let pidStr = await sendCommond('shell:grep -a webview_devtools_remote /proc/net/unix')
-  let pids = getPidsFromStr(pidStr)
-  tempTarget = []
-  for (const pidInfo of pids) {
-    await connect()
-    await sendCommond(`host:forward:tcp:${pidInfo.port};localabstract:${pidInfo.v}`).then(()=>getTargets(pidInfo))
-  }
   try {
-    await getTargets({port:9000})
-  } catch (error) {
+    await connect()
+    await sendCommond('host:transport-any')
+    let pidStr = await sendCommond('shell:grep -a webview_devtools_remote /proc/net/unix')
+    let pids = getPidsFromStr(pidStr)
+    tempTarget = []
+    for (const pidInfo of pids) {
+      await connect()
+      await sendCommond(`host:forward:tcp:${pidInfo.port};localabstract:${pidInfo.v}`).then(()=>getTargets(pidInfo))
+    }
+    await getTargets({port:9000}).catch(()=>{})
+    newTargets = tempTarget
+  } catch (error) { 
   }
-  newTargets = tempTarget
   setTimeout(() => {
     main()
   }, 1000);
