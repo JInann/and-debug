@@ -1,0 +1,25 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: 
+      - main
+    
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+          registry-url: 'https://registry.npmjs.org'
+#       - name: publish
+#         env:
+#           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+#           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+#         run: npm publish
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
