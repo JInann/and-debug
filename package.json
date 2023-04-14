@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev": "node serve.mjs"
+    "dev": "node serve.mjs",
+    "release":"node release.js"
   },
   "author": "",
   "license": "ISC",
