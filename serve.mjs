@@ -6,6 +6,7 @@ import { URL } from 'url'
 import open  from 'open'
 import path from 'path'
 import {fileURLToPath} from 'url'
+process.setMaxListeners(0)
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 let soc = new Socket()
@@ -13,6 +14,9 @@ let resultMsg
 soc.on('data',(data)=>{
   let str = data.toString()
   resultMsg = str
+})
+soc.on('error',(err)=>{
+  console.log(err.message)
 })
 
 /**
@@ -41,9 +45,6 @@ const getPidsFromStr = str=>{
 const sendCommond = cmd=>{
   let str = (cmd.length).toString(16).padStart(4,'0').toUpperCase() +cmd
   // console.log(cmd)
-  soc.on('error',(err)=>{
-    console.log(err.message)
-  })
   soc.write(str)
   return new Promise((res,rej)=>{
     let count = 0
