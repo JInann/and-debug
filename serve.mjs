@@ -6,19 +6,29 @@ import { URL } from 'url'
 import open  from 'open'
 import path from 'path'
 import {fileURLToPath} from 'url'
+import { execSync } from 'child_process'
 process.setMaxListeners(0)
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
-let soc = new Socket()
+let soc;
 let resultMsg
-soc.on('data',(data)=>{
-  let str = data.toString()
-  resultMsg = str
-})
-soc.on('error',(err)=>{
-  console.log(err.message)
-})
-
+const initSocket = ()=>{
+  soc = new Socket()
+  let onData = (data)=>{
+    let str = data.toString()
+    resultMsg = str
+  }
+  let onError = (err)=>{
+    console.log('设备连接失败，正在重新尝试连接')
+    execSync('adb start-server')
+    soc.off('data',onData)
+    soc.off('error',onError)
+    initSocket()
+  }
+  soc.on('data',onData)
+  soc.on('error',onError)
+}
+initSocket()
 /**
  * 从命令行输出的字符串中获取需要的进程信息
  * @param {} str 
@@ -98,6 +108,16 @@ const GET = url =>{
     }
   })
 }
+const timeoutRun = (fn,time)=>{
+  return new Promise((reslove,reject)=>{
+    fn().then(()=>{
+      reslove()
+    })
+    setTimeout(() => {
+      reject()
+    }, time);
+  })
+}
 const getTargets = async (pidInfo)=>{
   return GET(`http://127.0.0.1:${pidInfo.port}/json/list`).then(targets=>{
     targets.forEach(item=>{
@@ -132,12 +152,18 @@ const main = async ()=>{
     await getTargets({port:9000}).catch(()=>{})
     newTargets = tempTarget
   } catch (error) { 
+    // console.log(error)
   }
-  setTimeout(() => {
-    main()
-  }, 1000);
 }
-main()
+
+let start = ()=>{
+  timeoutRun(main,1000).catch(()=>{}).finally(()=>{
+    setTimeout(() => {
+      start()
+    }, 1000);
+  })
+}
+start()
 
 const server = createServer((req,res)=>{
   let pathname = req.url
