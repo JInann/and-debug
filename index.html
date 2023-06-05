@@ -18,19 +18,30 @@
   <script>
     function getData(){
       fetch('/list').then(res=>res.json()).then(res=>{
-        if(res.length>0){
-          document.querySelector('#app').innerHTML = [...res].map(v=>{
-            return `
-            <div class='item'>
-              <div>标题：${v.title}<div>
-              <div>h5地址：${v.url}</div>
-              <div><a href="${v.debuggerUrl}" target="_blank">开始调试</a><div>
-            </div>`
-          }).join('<hr />')
-        }else{
-          document.querySelector('#app').innerHTML = '暂无数据'
-        }
+        render(res)
       })
+    }
+    let temp
+    function render(res){
+      let html
+      if(res.length>0){
+        html = [...res].map(v=>{
+          return `
+          <div class='item'>
+            <div>标题：${v.title}<div>
+            <div>h5地址：${v.url}</div>
+            <div><a href="${v.debuggerUrl}" target="_blank">开始调试</a><div>
+          </div>`
+        }).join('<hr />')
+      }else{
+        html = '暂无数据'
+      }
+      if(html==temp){
+        return
+      } else {
+        temp = html
+        document.querySelector('#app').innerHTML = html
+      }
     }
     getData()
     setInterval(()=>{
